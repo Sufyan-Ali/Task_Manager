@@ -34,7 +34,7 @@ function deleteTask(id){
     }
 }
 function searchTask(){
-    searchedTasks = tasks.filter(task => task.task == searchedInput.value)
+    searchedTasks = tasks.filter(task => task.task.includes(searchedInput.value))
     searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
     
 }
