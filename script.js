@@ -29,23 +29,23 @@ list.addEventListener("click", function(event){
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
     reRenderUI(tasks)
+    if(searchedInput.value != ''){
+        searchTask()
+    }
 }
 function searchTask(){
     searchedTasks = tasks.filter(task => task.task == searchedInput.value)
     searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
-    if (searchedTasks.length == 0){
-        list.innerHTML = ""
-        list.innerHTML += "<p>No tasks found</p>"
-    }
+    
 }
 function reRenderUI(showTasks){
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
-        list.innerHTML += "<div><li>"+showTasks[l].task  +"<button id=deleteTaskButton data-id="+ showTasks[l].id +">Delete</button></li></div>"
+        list.innerHTML += "<div><li>"+showTasks[l].task  +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
     }
     if(showTasks.length == 0){
         list.innerHTML = ""
-        list.innerHTML += "<p>No tasks</p>"
+        list.innerHTML += "<li>No tasks</li>"
     }
 }
 console.log("Javascript Connected")
