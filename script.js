@@ -2,9 +2,11 @@ let tasks = []
 let searchedTasks= []
 let nextID = 1
 
-const input = document.getElementById("input")
+const input = document.getElementById("addTaskInput")
+const searchedInput = document.getElementById("searchTaskInput")
 const button = document.getElementById("addTaskButton")
 button.addEventListener("click", addTask)
+searchedInput.addEventListener("input",searchTask)
 const list = document.getElementById("list")
 
 function addTask(){
@@ -28,10 +30,22 @@ function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
     reRenderUI(tasks)
 }
+function searchTask(){
+    searchedTasks = tasks.filter(task => task.task == searchedInput.value)
+    searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
+    if (searchedTasks.length == 0){
+        list.innerHTML = ""
+        list.innerHTML += "<p>No tasks found</p>"
+    }
+}
 function reRenderUI(showTasks){
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
         list.innerHTML += "<div><li>"+showTasks[l].task  +"<button id=deleteTaskButton data-id="+ showTasks[l].id +">Delete</button></li></div>"
+    }
+    if(showTasks.length == 0){
+        list.innerHTML = ""
+        list.innerHTML += "<p>No tasks</p>"
     }
 }
 console.log("Javascript Connected")
