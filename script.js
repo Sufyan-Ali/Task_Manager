@@ -14,7 +14,7 @@ function addTask(){
     tasks.push({id: nextID ,task: input.value})
     nextID++
     input.value = ""
-    reRenderUI()
+    reRenderUI(tasks)
 }
 list.addEventListener("click", function(event){
     const clickedTag = event.target
@@ -26,12 +26,12 @@ list.addEventListener("click", function(event){
 
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
-    reRenderUI()
+    reRenderUI(tasks)
 }
 function reRenderUI(showTasks){
     list.innerHTML = ""
-    for (let l = 0; l < tasks.length; l++) {
-        list.innerHTML += "<div><li>"+tasks[l].task  +"<button id=deleteTaskButton data-id="+ tasks[l].id +">Delete</button></li></div>"
+    for (let l = 0; l < showTasks.length; l++) {
+        list.innerHTML += "<div><li>"+showTasks[l].task  +"<button id=deleteTaskButton data-id="+ showTasks[l].id +">Delete</button></li></div>"
     }
 }
 console.log("Javascript Connected")
