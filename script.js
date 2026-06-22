@@ -13,7 +13,7 @@ function addTask(){
     if (input.value == "") {
         return
     }
-    tasks.push({id: nextID ,task: input.value})
+    tasks.push({id: nextID ,task: input.value, completed: false})
     nextID++
     input.value = ""
     reRenderUI(tasks)
@@ -23,7 +23,9 @@ list.addEventListener("click", function(event){
     if(clickedTag.tagName.toLowerCase() == "button"){
         deleteTask(clickedTag.dataset.id)
     }
-    
+    if(clickedTag.tagName.toLowerCase()== "input"){
+    completedTaskToggle(clickedTag.dataset.id,clickedTag.checked)
+    }
 })
 
 function deleteTask(id){
@@ -38,10 +40,19 @@ function searchTask(){
     searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
     
 }
+function completedTaskToggle(id, isChecked){
+    tasks.forEach(task => {
+        if(task.id == id){
+            task.completed = isChecked
+        }
+    })
+
+    console.log(tasks)
+}
 function reRenderUI(showTasks){
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
-        list.innerHTML += "<div><li>"+showTasks[l].task  +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
+        list.innerHTML += "<div><li><input type=checkbox checked="+"false"+" data-id="+ showTasks[l].id +" />"+showTasks[l].task  +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
     }
     if(showTasks.length == 0){
         list.innerHTML = ""
