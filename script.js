@@ -51,8 +51,21 @@ function completedTaskToggle(id, isChecked){
 function reRenderUI(showTasks){
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
-        list.innerHTML += "<div><li><input type=checkbox "+ (showTasks[l].completed==true?"checked":"")+" data-id="+ showTasks[l].id +" />"+showTasks[l].task  +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
+        list.innerHTML += 
+        `<div>
+        <li>
+        <input type=checkbox ${showTasks[l].completed==true?"checked":""} data-id= ${showTasks[l].id} />
+         ${showTasks[l].task}  
+        <button data-id= ${showTasks[l].id} >Delete</button>
+        </li>
+        </div>`
     }
+    // for (let l = 0; l < showTasks.length; l++) {
+    //     list.innerHTML += "<div><li><input type=checkbox "
+    //     + (showTasks[l].completed==true?"checked":"")
+    //     +" data-id="+ showTasks[l].id +" />"+showTasks[l].task  
+    //     +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
+    // }
     if(showTasks.length == 0){
         list.innerHTML = ""
         list.innerHTML += "<li>No tasks</li>"
