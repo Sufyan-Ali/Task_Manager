@@ -11,10 +11,11 @@ const list = document.getElementById("list")
 const totalTaskCount = document.getElementById("totalTaskCount")
 const completedTaskCount = document.getElementById("completedTaskCount")
 const pendingTaskCount = document.getElementById("pendingTaskCount")
-// const displayAllTasksElement = document.getElementById("displayAllTasks")
+const displayAllTasksElement = document.getElementById("displayAllTasks")
 const displayCompletedTasksElement = document.getElementById("displayCompletedTasks")
 const displayPendingTasksElement = document.getElementById("displayPendingTasks")
 
+displayAllTasksElement.addEventListener("click", displayAllTasks)
 displayCompletedTasksElement.addEventListener("click", displayCompletedTasks)
 displayPendingTasksElement.addEventListener("click", displayPendingTasks)
 
@@ -40,11 +41,10 @@ list.addEventListener("click", function(event){
 
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
-    reRenderUI(tasks)
+    reRenderUI(getVisibleTasks())
 }
-function searchTask({tasksArray = tasks}){
-    searchedTasks = tasksArray.filter(task => task.task.includes(searchedInput.value))
-    searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
+function searchTask(tasks){
+    reRenderUI(getVisibleTasks())
 }
 function completedTaskToggle(id, isChecked){
     tasks.forEach(task => {
@@ -52,7 +52,7 @@ function completedTaskToggle(id, isChecked){
             task.completed = isChecked
         }
     })
-    reRenderUI(tasks)
+    reRenderUI(getVisibleTasks())
 }
 function taskCounter(){
     totalTaskCount.innerHTML = `Total Tasks: ${tasks.length}`
@@ -60,18 +60,23 @@ function taskCounter(){
     pendingTaskCount.innerHTML = `Pending Tasks: ${tasks.filter(task => task.completed == false).length}`
 }
 function displayAllTasks(){
-    reRenderUI(tasks)
+    reRenderUI(getVisibleTasks())
 }
 function displayCompletedTasks(){
     let completedTasks = tasks.filter(task => task.completed == true)
-    reRenderUI(completedTasks)
+    reRenderUI(getVisibleTasks(completedTasks))
 }
 function displayPendingTasks(){
     let pendingTasks = tasks.filter(task => task.completed == false)
-    reRenderUI(pendingTasks)
+    reRenderUI(getVisibleTasks(pendingTasks))
+}
+function getVisibleTasks(tasksArray = tasks){
+    if(searchedInput.value != ''){
+        return tasksArray.filter(task => task.task.includes(searchedInput.value))
+    }
+    return tasksArray
 }
 function reRenderUI(showTasks){
-    if(searchedInput.value != ''){showTasks = searchedTasks}
     taskCounter()
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
