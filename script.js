@@ -1,9 +1,6 @@
 let tasks = []
 let searchedTasks= []
 let nextID = 1
-let totalTasks = 0
-let completedTasks = 0
-let pendingTasks = 0
 
 const input = document.getElementById("addTaskInput")
 const searchedInput = document.getElementById("searchTaskInput")
@@ -22,6 +19,7 @@ function addTask(){
     tasks.push({id: nextID ,task: input.value, completed: false})
     nextID++
     input.value = ""
+    searchedInput.value=""
     reRenderUI(tasks)
 }
 list.addEventListener("click", function(event){
@@ -39,9 +37,6 @@ list.addEventListener("click", function(event){
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
     reRenderUI(tasks)
-    if(searchedInput.value != ''){
-        searchTask()
-    }
 }
 function searchTask(){
     searchedTasks = tasks.filter(task => task.task.includes(searchedInput.value))
@@ -53,21 +48,24 @@ function completedTaskToggle(id, isChecked){
             task.completed = isChecked
         }
     })
-    taskCounter()
     reRenderUI(tasks)
+    
 }
 function taskCounter(){
-    totalTasks = tasks.length
-    completedTasks = tasks.filter(task => task.completed == true).length
-    pendingTasks = tasks.filter(task => task.completed == false).length
-    console.log(totalTasks ,completedTasks, pendingTasks)
+    totalTaskCount.innerHTML = `Total Tasks: ${tasks.length}`
+    completedTaskCount.innerHTML = `Completed Tasks: ${tasks.filter(task => task.completed == true).length}`
+    pendingTaskCount.innerHTML = `Pending Tasks: ${tasks.filter(task => task.completed == false).length}`
 }
+// function showVisibleTasks(){
+//     if(searchedInput.value != ''){
+//         searchTask()
+//     }
+// }
 function reRenderUI(showTasks){
+    // showVisibleTasks()
+    if(searchedInput.value != ''){showTasks = searchedTasks}
+    else {showTasks = tasks}
     taskCounter()
-    totalTaskCount.innerHTML = `Total Tasks: ${totalTasks}`
-    completedTaskCount.innerHTML = `Completed Tasks: ${completedTasks}`
-    pendingTaskCount.innerHTML = `Pending Tasks: ${pendingTasks}`
-
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
         list.innerHTML += 
