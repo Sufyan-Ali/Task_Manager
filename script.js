@@ -1,6 +1,9 @@
 let tasks = []
 let searchedTasks= []
 let nextID = 1
+let totalTasks = 0
+let completedTasks = 0
+let pendingTasks = 0
 
 const input = document.getElementById("addTaskInput")
 const searchedInput = document.getElementById("searchTaskInput")
@@ -8,6 +11,9 @@ const button = document.getElementById("addTaskButton")
 button.addEventListener("click", addTask)
 searchedInput.addEventListener("input",searchTask)
 const list = document.getElementById("list")
+const totalTaskCount = document.getElementById("totalTaskCount")
+const completedTaskCount = document.getElementById("completedTaskCount")
+const pendingTaskCount = document.getElementById("pendingTaskCount")
 
 function addTask(){
     if (input.value == "") {
@@ -28,6 +34,8 @@ list.addEventListener("click", function(event){
     }
 })
 
+
+
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
     reRenderUI(tasks)
@@ -38,7 +46,6 @@ function deleteTask(id){
 function searchTask(){
     searchedTasks = tasks.filter(task => task.task.includes(searchedInput.value))
     searchedInput.value == '' ? reRenderUI(tasks) : reRenderUI(searchedTasks)
-    
 }
 function completedTaskToggle(id, isChecked){
     tasks.forEach(task => {
@@ -46,26 +53,32 @@ function completedTaskToggle(id, isChecked){
             task.completed = isChecked
         }
     })
-    console.log(tasks)
+    taskCounter()
+    reRenderUI(tasks)
+}
+function taskCounter(){
+    totalTasks = tasks.length
+    completedTasks = tasks.filter(task => task.completed == true).length
+    pendingTasks = tasks.filter(task => task.completed == false).length
+    console.log(totalTasks ,completedTasks, pendingTasks)
 }
 function reRenderUI(showTasks){
+    taskCounter()
+    totalTaskCount.innerHTML = `Total Tasks: ${totalTasks}`
+    completedTaskCount.innerHTML = `Completed Tasks: ${completedTasks}`
+    pendingTaskCount.innerHTML = `Pending Tasks: ${pendingTasks}`
+
     list.innerHTML = ""
     for (let l = 0; l < showTasks.length; l++) {
         list.innerHTML += 
         `<div>
         <li>
         <input type=checkbox ${showTasks[l].completed==true?"checked":""} data-id= ${showTasks[l].id} />
-         ${showTasks[l].task}  
+        ${showTasks[l].task}  
         <button data-id= ${showTasks[l].id} >Delete</button>
         </li>
         </div>`
     }
-    // for (let l = 0; l < showTasks.length; l++) {
-    //     list.innerHTML += "<div><li><input type=checkbox "
-    //     + (showTasks[l].completed==true?"checked":"")
-    //     +" data-id="+ showTasks[l].id +" />"+showTasks[l].task  
-    //     +"<button data-id="+ showTasks[l].id +">Delete</button></li></div>"
-    // }
     if(showTasks.length == 0){
         list.innerHTML = ""
         list.innerHTML += "<li>No tasks</li>"

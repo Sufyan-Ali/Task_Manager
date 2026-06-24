@@ -6,16 +6,27 @@
   <body>
     <h1>This is a task manager app (Todo list).</h1>
     <div>
-      <input id="addTaskInput" type="text" placeholder="Add Task"/>
+      <input id="addTaskInput" type="text" placeholder="Add Task" />
       <button id="addTaskButton">Add Task</button>
     </div>
     <div>
       <input id="searchTaskInput" type="text" placeholder="Search Task" />
     </div>
     <!-- <button id= "addTaskButton">Add Task</button> -->
-    <h2 >Current Tasks</h2>
+    <h2>Tasks Status</h2>
+    <div>
+      <p id="totalTaskCount" >Total Tasks: 0</p>
+      <p id="completedTaskCount">Completed Tasks: 0</p>
+      <p id="pendingTaskCount">Pending Tasks: 0</p>
+    </div>
+    <h2>Current Tasks</h2>
+    <div>
+        <button>All</button>
+        <button>Completed</button>
+        <button>Pending</button>
+    </div>
     <ul id="list">
-        <li>No tasks</li>
+      <li>No tasks</li>
     </ul>
     <script src="script.js"></script>
   </body>
