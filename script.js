@@ -3,11 +3,11 @@ let searchedTasks= []
 let nextID = 1
 let statusFilter = "all"
 
+
+
 const input = document.getElementById("addTaskInput")
 const searchedInput = document.getElementById("searchTaskInput")
 const button = document.getElementById("addTaskButton")
-button.addEventListener("click", addTask)
-searchedInput.addEventListener("input",searchTask)
 const list = document.getElementById("list")
 const totalTaskCount = document.getElementById("totalTaskCount")
 const completedTaskCount = document.getElementById("completedTaskCount")
@@ -16,9 +16,28 @@ const displayAllTasksElement = document.getElementById("displayAllTasks")
 const displayCompletedTasksElement = document.getElementById("displayCompletedTasks")
 const displayPendingTasksElement = document.getElementById("displayPendingTasks")
 
+button.addEventListener("click", addTask)
+searchedInput.addEventListener("input",searchTask)
 displayAllTasksElement.addEventListener("click", displayAllTasks)
 displayCompletedTasksElement.addEventListener("click", displayCompletedTasks)
 displayPendingTasksElement.addEventListener("click", displayPendingTasks)
+
+try {
+    const storedTasks = localStorage.getItem("tasks")
+    if(typeof(storedTasks) == "string"){
+       tasks = JSON.parse(storedTasks)
+       if(tasks.length > 0){
+           nextID = tasks[tasks.length-1].id + 1
+       }
+       else{
+        nextID = 1
+       }
+       reRenderUI(tasks)
+    }
+    console.log(tasks)
+}catch(e){
+    console.log(e,"Error while loading tasks from the local storage.")
+}
 
 function addTask(){
     if (input.value == "") {
@@ -29,6 +48,7 @@ function addTask(){
     input.value = ""
     searchedInput.value=""
     statusFilter = "all"
+    saveTasks(tasks)
     reRenderUI(tasks)
 }
 list.addEventListener("click", function(event){
@@ -43,6 +63,7 @@ list.addEventListener("click", function(event){
 
 function deleteTask(id){
     tasks = tasks.filter(task => task.id != id)
+    saveTasks(tasks)
     reRenderUI(getVisibleTasks())
 }
 function searchTask(tasks){
@@ -54,6 +75,7 @@ function completedTaskToggle(id, isChecked){
             task.completed = isChecked
         }
     })
+    saveTasks(tasks)
     reRenderUI(getVisibleTasks())
 }
 function taskCounter(){
@@ -83,7 +105,7 @@ function applyStatusFilter(tasksArray){
         return tasksArray.filter(task => task.completed == true)
     }
     else if(statusFilter == "pending"){
-        return tasks.filter(task => task.completed == false)
+        return tasksArray.filter(task => task.completed == false)
     }
     return tasksArray
 }
@@ -92,6 +114,12 @@ function applySearchFilter(tasksArray){
         return tasksArray.filter(task => task.task.includes(searchedInput.value))
     }
     return tasksArray
+}
+
+function saveTasks(tasksArray){
+    const tasksString = JSON.stringify(tasksArray)
+    localStorage.setItem("tasks",tasksString)
+    console.log("Tasks stored successfully.")
 }
 
 function reRenderUI(showTasks){
