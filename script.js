@@ -1,6 +1,7 @@
 let tasks = []
 let searchedTasks= []
 let nextID = 1
+let statusFilter = "all"
 
 const input = document.getElementById("addTaskInput")
 const searchedInput = document.getElementById("searchTaskInput")
@@ -27,6 +28,7 @@ function addTask(){
     nextID++
     input.value = ""
     searchedInput.value=""
+    statusFilter = "all"
     reRenderUI(tasks)
 }
 list.addEventListener("click", function(event){
@@ -60,22 +62,38 @@ function taskCounter(){
     pendingTaskCount.innerHTML = `Pending Tasks: ${tasks.filter(task => task.completed == false).length}`
 }
 function displayAllTasks(){
+    statusFilter = "all"
     reRenderUI(getVisibleTasks())
 }
 function displayCompletedTasks(){
-    let completedTasks = tasks.filter(task => task.completed == true)
-    reRenderUI(getVisibleTasks(completedTasks))
+    statusFilter = "completed"
+    reRenderUI(getVisibleTasks())
 }
 function displayPendingTasks(){
-    let pendingTasks = tasks.filter(task => task.completed == false)
-    reRenderUI(getVisibleTasks(pendingTasks))
+    statusFilter = "pending"
+    reRenderUI(getVisibleTasks())
 }
 function getVisibleTasks(tasksArray = tasks){
+    tasksArray = applyStatusFilter(tasksArray)
+    tasksArray = applySearchFilter(tasksArray)    
+    return tasksArray
+}
+function applyStatusFilter(tasksArray){
+    if(statusFilter == "completed"){
+        return tasksArray.filter(task => task.completed == true)
+    }
+    else if(statusFilter == "pending"){
+        return tasks.filter(task => task.completed == false)
+    }
+    return tasksArray
+}
+function applySearchFilter(tasksArray){
     if(searchedInput.value != ''){
         return tasksArray.filter(task => task.task.includes(searchedInput.value))
     }
     return tasksArray
 }
+
 function reRenderUI(showTasks){
     taskCounter()
     list.innerHTML = ""
