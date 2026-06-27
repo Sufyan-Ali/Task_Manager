@@ -15,7 +15,10 @@ const pendingTaskCount = document.getElementById("pendingTaskCount")
 const displayAllTasksElement = document.getElementById("displayAllTasks")
 const displayCompletedTasksElement = document.getElementById("displayCompletedTasks")
 const displayPendingTasksElement = document.getElementById("displayPendingTasks")
+const importTasksButton = document.getElementById("importTasksButton")
+const importPTag = document.getElementById("importPTag")
 
+importTasksButton.addEventListener("click", importTasks)
 button.addEventListener("click", addTask)
 searchedInput.addEventListener("input",searchTask)
 displayAllTasksElement.addEventListener("click", displayAllTasks)
@@ -34,10 +37,33 @@ try {
        }
        reRenderUI(tasks)
     }
-    console.log(tasks)
 }catch(e){
     console.log(e,"Error while loading tasks from the local storage.")
 }
+
+async function importTasks(){
+    try {
+       let importedTasks = await fetch("https://jsonplaceholder.typicode.com/todos")
+       importedTasks = await importedTasks.json()
+       for (let l = 0; l < 5; l++) {
+        const tempTask = {
+            id : nextID,
+            task : importedTasks[l].title,
+            completed : importedTasks[l].completed
+        };
+        tasks.push(tempTask)
+        nextID++
+       }
+       saveTasks(tasks)
+       reRenderUI(tasks)
+    } catch (error) {
+        displayImportError()
+        console.log(error, "Something went wrong")
+    }finally{
+        console.log("Import Button Was Clicked")
+    }
+}
+
 
 function addTask(){
     if (input.value == "") {
@@ -115,11 +141,16 @@ function applySearchFilter(tasksArray){
     }
     return tasksArray
 }
+function displayImportError(){
+    importPTag.innerHTML +=`<p style="color:red">Something went wrong while importing tasks</p>`
+    setTimeout(()=> {
+        importPTag.innerHTML = ""
+    },2000)
+}
 
 function saveTasks(tasksArray){
     const tasksString = JSON.stringify(tasksArray)
     localStorage.setItem("tasks",tasksString)
-    console.log("Tasks stored successfully.")
 }
 
 function reRenderUI(showTasks){
