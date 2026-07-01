@@ -9,6 +9,11 @@
       <input id="addTaskInput" type="text" placeholder="Add Task" />
       <button id="addTaskButton">Add Task</button>
     </div>
+    <div id="categoryInput">
+        <input type="checkbox" name="categoryCheckbox" value="study" id="">Study
+        <input type="checkbox" name="categoryCheckbox" value="work" id="">Work
+        <input type="checkbox" name="categoryCheckbox" value="personal" id="">Personal
+    </div>
     <br>
     <div>
       <input id="searchTaskInput" type="text" placeholder="Search Task" />
@@ -26,9 +31,18 @@
     </div>
     <h2>Current Tasks</h2>
     <div>
+        Status filter: 
         <button id="displayAllTasks">All</button>
         <button id="displayCompletedTasks">Completed</button>
         <button id="displayPendingTasks">Pending</button>
+    </div>
+    <br>
+    <div>
+        Category filter: 
+        <button id="displayAllCategory">All</button>
+        <button id="displayStudyCategory">Study</button>
+        <button id="displayWorkCategory">Work</button>
+        <button id="displayPersonalCategory">Personal</button>
     </div>
     <ul id="list">
       <li>No tasks</li>

@@ -2,7 +2,8 @@ let tasks = []
 let searchedTasks= []
 let nextID = 1
 let statusFilter = "all"
-
+const categories = ["study","personal","work"]
+let categoryFilter = "all"
 
 
 const input = document.getElementById("addTaskInput")
@@ -15,8 +16,15 @@ const pendingTaskCount = document.getElementById("pendingTaskCount")
 const displayAllTasksElement = document.getElementById("displayAllTasks")
 const displayCompletedTasksElement = document.getElementById("displayCompletedTasks")
 const displayPendingTasksElement = document.getElementById("displayPendingTasks")
+const displayAllCategoriesElement = document.getElementById("displayAllCategory")
+const displayStudyCategoryElement = document.getElementById("displayStudyCategory")
+const displayWorkCategoryElement = document.getElementById("displayWorkCategory")
+const displayPersonalCategoryElement = document.getElementById("displayPersonalCategory")
 const importTasksButton = document.getElementById("importTasksButton")
 const importPTag = document.getElementById("importPTag")
+// const categoryInput = document.getElementById("categoryInput")
+const categoryCheckbox = document.getElementsByName("categoryCheckbox")
+// console.log(categoryInput.childNodes)
 
 importTasksButton.addEventListener("click", importTasks)
 button.addEventListener("click", addTask)
@@ -24,6 +32,10 @@ searchedInput.addEventListener("input",searchTask)
 displayAllTasksElement.addEventListener("click", displayAllTasks)
 displayCompletedTasksElement.addEventListener("click", displayCompletedTasks)
 displayPendingTasksElement.addEventListener("click", displayPendingTasks)
+displayAllCategoriesElement.addEventListener("click", displayAllCategories)
+displayStudyCategoryElement.addEventListener("click", displayStudyCategory)
+displayWorkCategoryElement.addEventListener("click", displayWorkCategory)
+displayPersonalCategoryElement.addEventListener("click", displayPersonalCategory)
 
 try {
     const storedTasks = localStorage.getItem("tasks")
@@ -69,7 +81,13 @@ function addTask(){
     if (input.value == "") {
         return
     }
-    tasks.push({id: nextID ,task: input.value, completed: false})
+    let tempCategory=[]
+    categoryCheckbox.forEach(element => {
+        if(element.checked){
+            tempCategory.push(element.value)
+        }
+    });
+    tasks.push({id: nextID ,task: input.value, completed: false, categories: tempCategory})
     nextID++
     input.value = ""
     searchedInput.value=""
@@ -109,6 +127,22 @@ function taskCounter(){
     completedTaskCount.innerHTML = `Completed Tasks: ${tasks.filter(task => task.completed == true).length}`
     pendingTaskCount.innerHTML = `Pending Tasks: ${tasks.filter(task => task.completed == false).length}`
 }
+function displayAllCategories(){
+    categoryFilter ="all"
+    reRenderUI(getVisibleTasks())    
+}
+function displayWorkCategory(){
+    categoryFilter ="work"
+    reRenderUI(getVisibleTasks())    
+}
+function displayStudyCategory(){
+    categoryFilter ="study"
+    reRenderUI(getVisibleTasks())        
+}
+function displayPersonalCategory(){
+    categoryFilter ="personal"
+    reRenderUI(getVisibleTasks())    
+}
 function displayAllTasks(){
     statusFilter = "all"
     reRenderUI(getVisibleTasks())
@@ -123,8 +157,38 @@ function displayPendingTasks(){
 }
 function getVisibleTasks(tasksArray = tasks){
     tasksArray = applyStatusFilter(tasksArray)
-    tasksArray = applySearchFilter(tasksArray)    
+    tasksArray = appylCategoryFilter(tasksArray)  
+    tasksArray = applySearchFilter(tasksArray)
     return tasksArray
+}
+function appylCategoryFilter(tasksArray){
+    
+    // if(categoryFilter == "work"){
+    //     return tasksArray.filter(task => {
+    //         if(task.categories !=undefined){
+    //             return task.categories.indexOf(categoryFilter) >= 0
+    //         }
+    //     })
+    // }
+    // else if(categoryFilter == "study"){
+    //     return tasksArray.filter(task => {
+    //         if(task.categories !=undefined){
+    //             return task.categories.indexOf(categoryFilter) >= 0
+    //         }
+    //     })
+    // }
+    // else if(categoryFilter == "personal"){
+    //     return tasksArray.filter(task => {
+    //         if(task.categories !=undefined){
+    //             return task.categories.indexOf(categoryFilter) >= 0
+    //         }
+    //     })
+    // }
+    return tasksArray.filter(task => {
+            if(task.categories !=undefined){
+                return task.categories.indexOf(categoryFilter) >= 0
+            }
+        })
 }
 function applyStatusFilter(tasksArray){
     if(statusFilter == "completed"){
@@ -163,6 +227,7 @@ function reRenderUI(showTasks){
         <input type=checkbox ${showTasks[l].completed==true?"checked":""} data-id= ${showTasks[l].id} />
         ${showTasks[l].task}  
         <button data-id= ${showTasks[l].id}>Delete</button>
+        ${showTasks[l].categories != undefined?`Categories: ${showTasks[l].categories}`:""}
         </li>
         </div>`
     }
